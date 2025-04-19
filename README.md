@@ -38,7 +38,11 @@ struct TestApp: App {
 
     init() {
         // App 시작 시 단 1회 호출
+        // 1. 기본값: iPhone 15 Pro Max 기준
         DynamicSize.setScreenSize(UIScreen.main.bounds)
+        
+        // 2. 명시적으로 다른 기준 사용
+        DynamicSize.setScreenSize(UIScreen.main.bounds, baseDevice: .iPhone14ProMax)
     }
 
     var body: some Scene {
