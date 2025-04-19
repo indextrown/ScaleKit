@@ -29,15 +29,39 @@ Xcode →
 ### SwiftUI
 
 ```swift
+// App.swift
+import SwiftUI
 import ScaleKit
 
-// App 시작 시 단 1회 호출
-DynamicSize.setScreenSize(UIScreen.main.bounds)
+@main
+struct TestApp: App {
 
-Text("시작하기")
-    .font(.system(size: 18.scaled))     // Int
-    .padding(12.0.scaled)               // Double
-    .frame(width: 100.scaled, height: 50.scaled)
+    init() {
+        // App 시작 시 단 1회 호출
+        DynamicSize.setScreenSize(UIScreen.main.bounds)
+    }
+
+    var body: some Scene {
+        WindowGroup {
+            ContentView()
+        }
+    }
+}
+```
+
+```swift
+// ContentView.swift
+import SwiftUI
+import ScaleKit
+
+struct ContentView: View {
+    var body: some View {
+        Text("시작하기")
+            .font(.system(size: 18.scaled))     // Int
+            .padding(12.0.scaled)               // Double
+            .frame(width: 100.scaled, height: 50.scaled)
+    }
+}
 ```
 
 ---
@@ -45,13 +69,24 @@ Text("시작하기")
 ### UIKit
 
 ```swift
+import UIKit
 import ScaleKit
 
-// AppDelegate 또는 SceneDelegate에서 호출
-DynamicSize.setScreenSize(UIScreen.main.bounds)
-
-label.font = .systemFont(ofSize: 18.scaled)
-view.layer.cornerRadius = 12.scaled
+class SceneDelegate: UIResponder, UIWindowSceneDelegate {
+    
+    var window: UIWindow?
+    
+    func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
+        // 1. 현재 화면 크기 설정 (App 시작 시 단 1회)
+        guard let windowScene = (scene as? UIWindowScene) else { return }
+        DynamicSize.setScreenSize(windowScene.screen.bounds)
+        
+        // 2. 이후 UIKit 전역에서 .scaled 사용 가능
+        let label = UILabel()
+        label.font = .systemFont(ofSize: 18.scaled)
+        label.layer.cornerRadius = 12.scaled
+    }
+}
 ```
 
 ---
