@@ -132,8 +132,9 @@ scaledSize = baseSize × scaleFactor
 ```
 Sources/
 └── ScaleKit/
-    ├── DynamicSize.swift  
-    └── Scaled+Extensions.swift
+    ├── DynamicSize.swift               # 스케일 계산 및 기본 화면 크기 관리
+    ├── DynamicSize+BaseDevice.swift    # BaseDevice enum 및 명시적 기준 디바이스 설정
+    └── Scaled+Extensions.swift         # .scaled 확장 (CGFloat, Int, Float, Double)
 ```
 
 ---
