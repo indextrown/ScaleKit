@@ -27,3 +27,11 @@ public extension Int {
         return DynamicSize.scaledSize(CGFloat(self))
     }
 }
+
+@MainActor
+public extension CGFloat {
+    var scaled: CGFloat {
+        return DynamicSize.scaledSize(self)
+    }
+}
+
