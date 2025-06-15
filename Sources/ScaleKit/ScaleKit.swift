@@ -2,6 +2,7 @@
 // https://docs.swift.org/swift-book
 
 import CoreGraphics
+import UIKit
 
 /**
  🧩 DynamicSize 사용 가이드
@@ -32,17 +33,25 @@ import CoreGraphics
  앱 시작 시 반드시 `setScreenSize(_:)` 호출 필요:
      DynamicSize.setScreenSize(UIScreen.main.bounds)
  */
-
 @MainActor
 public struct DynamicSize {
-    // MARK: - 기준 기기 (default: iPhone 15 Pro Max)
-    private static var baseSize: CGSize = BaseDevice.iPhone15ProMax.size
-    private static var bounds: CGRect = CGRect(origin: .zero, size: baseSize)
+    
+    // MARK: - 기준 기기 (iPhone 15 Pro Max)
+    private static let baseWidth: CGFloat = 430
+    private static let baseHeight: CGFloat = 932
+    private static let baseDiagonal: CGFloat = sqrt(baseWidth * baseWidth + baseHeight * baseHeight)
 
-    /// 앱 시작 시, 현재 디바이스 screen bounds 및 기준 디바이스를 설정
-    public static func setScreenSize(_ newBounds: CGRect, baseDevice: BaseDevice = .iPhone15ProMax) {
+    // MARK: - iPad 기준 기기 (예: iPad Air 10.9인치)
+    private static let iPadBaseWidth: CGFloat = 834
+    private static let iPadBaseHeight: CGFloat = 1194
+    private static let iPadBaseDiagonal: CGFloat = sqrt(iPadBaseWidth * iPadBaseWidth + iPadBaseHeight * iPadBaseHeight)
+
+    // MARK: - 현재 디바이스 화면 bounds
+    private static var bounds: CGRect = CGRect(x: 0, y: 0, width: baseWidth, height: baseHeight)
+
+    /// 앱 시작 시 호출: 현재 디바이스의 screen bounds를 설정
+    public static func setScreenSize(_ newBounds: CGRect) {
         self.bounds = newBounds
-        self.baseSize = baseDevice.size
     }
 
     /// 현재 기기 화면 너비
@@ -51,14 +60,18 @@ public struct DynamicSize {
     /// 현재 기기 화면 높이
     public static var screenHeight: CGFloat { bounds.height }
 
-    /// 전체 bounds
+    /// 현재 기기의 전체 bounds
     public static var screenBounds: CGRect { bounds }
 
     /// 현재 기기의 대각선 기반 스케일 비율
     public static var scaleFactor: CGFloat {
         let currentDiagonal = sqrt(screenWidth * screenWidth + screenHeight * screenHeight)
-        let baseDiagonal = sqrt(baseSize.width * baseSize.width + baseSize.height * baseSize.height)
-        return currentDiagonal / baseDiagonal
+
+        if UIDevice.current.userInterfaceIdiom == .pad {
+            return currentDiagonal / iPadBaseDiagonal
+        } else {
+            return currentDiagonal / baseDiagonal
+        }
     }
 
     /// 주어진 값에 스케일 비율을 적용 (동적 크기 계산)
